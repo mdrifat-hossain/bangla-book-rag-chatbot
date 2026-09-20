@@ -228,19 +228,7 @@ Question 9 is the required "answer not present in the book" test case.
 
 ---
 
-## 7. Demo Video Checklist
-When recording your 3–5 minute demo:
-1. **Pipeline (≈30–60s):** show `python pipeline.py` running (or its
-   completed output/logs) — crawling, chunking, embedding, index build.
-2. **Questions (≥5):** ask at least 5 of the questions from
-   `tests/test_questions.md` in the Streamlit app, showing each answer
-   *and* its source citation panel.
-3. **No-answer case:** ask question #9 (or a similar out-of-book
-   question) and show the chatbot correctly refusing to hallucinate.
-
----
-
-## 8. Bonus — Chunking Strategy Comparison (+10 marks)
+## 7. Bonus — Chunking Strategy Comparison (+10 marks)
 ```bash
 python -m bonus.compare_chunking
 ```

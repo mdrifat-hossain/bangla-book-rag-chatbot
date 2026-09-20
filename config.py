@@ -11,7 +11,7 @@ from pathlib import Path
 # ---------------------------------------------------------------------
 # Book selection
 # ---------------------------------------------------------------------
-BOOK_TITLE = "কপালকুণ্ডলা (বঙ্কিমচন্দ্র চট্টোপাধ্যায়, ১৮৭০)"          # <-- CHANGE THIS to your registered book
+BOOK_TITLE = "কপালকুণ্ডলা"          # <-- CHANGE THIS to your registered book
 WIKI_API = "https://bn.wikisource.org/w/api.php"
 
 # ---------------------------------------------------------------------
@@ -38,13 +38,13 @@ CHUNK_OVERLAP = 150       # characters (~19% overlap)
 # Embeddings / LLM — both served locally & free via Ollama
 # ---------------------------------------------------------------------
 OLLAMA_BASE_URL = "http://localhost:11434"
-EMBED_MODEL = "qwen3-embedding:0.6b"       # multilingual, strong on Bengali.
+EMBED_MODEL = "bge-m3"       # multilingual, strong on Bengali. `ollama pull bge-m3`
 LLM_MODEL = "qwen3:8b"       # already in your `ollama list`
-LLM_NUM_CTX = 4096           # generous context window for retrieved chunks
+LLM_NUM_CTX = 8192           # generous context window for retrieved chunks
 
 # ---------------------------------------------------------------------
 # Retrieval
 # ---------------------------------------------------------------------
-TOP_K = 6
+TOP_K = 4
 
 NO_ANSWER_PHRASE = "দুঃখিত, এই বইয়ে এই প্রশ্নের উত্তর পাওয়া যায়নি।"
