@@ -11,13 +11,13 @@ from pathlib import Path
 # ---------------------------------------------------------------------
 # Book selection
 # ---------------------------------------------------------------------
-BOOK_TITLE = "কপালকুণ্ডলা"          # <-- CHANGE THIS to your registered book
+BOOK_TITLE = "কপালকুণ্ডলা (বঙ্কিমচন্দ্র চট্টোপাধ্যায়, ১৮৭০)"          # <-- CHANGE THIS to your registered book
 WIKI_API = "https://bn.wikisource.org/w/api.php"
 
 # ---------------------------------------------------------------------
 # Crawling
 # ---------------------------------------------------------------------
-REQUEST_DELAY_SEC = 0.3               # be polite to Wikisource's servers
+REQUEST_DELAY_SEC = 1.0               # be polite to Wikisource's servers
 
 # ---------------------------------------------------------------------
 # Paths

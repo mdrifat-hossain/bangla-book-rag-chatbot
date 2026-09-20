@@ -31,6 +31,30 @@ HEADERS = {"User-Agent": "KB-Chatbot-Assignment/1.0 (educational RAG project)"}
 CHAPTER_HINT_WORDS = ["খণ্ড", "পরিচ্ছেদ", "অধ্যায়", "পর্ব", "ভাগ", "কাণ্ড"]
 
 
+def _api_get(params: dict, max_retries: int = 6):
+    """GET against the MediaWiki API with automatic retry/backoff on
+    HTTP 429 (rate limiting) — Wikisource will throttle a fast crawl,
+    so this is essential for reliably pulling every chapter."""
+    backoff = 2.0
+    for attempt in range(1, max_retries + 1):
+        resp = requests.get(WIKI_API, params=params, headers=HEADERS, timeout=30)
+        if resp.status_code == 429:
+            wait = float(resp.headers.get("Retry-After", backoff))
+            print(f"    [rate limited] waiting {wait:.1f}s "
+                  f"(retry {attempt}/{max_retries})...")
+            time.sleep(wait)
+            backoff = min(backoff * 2, 30)
+            continue
+        resp.raise_for_status()
+        return resp.json()
+    raise RuntimeError(
+        f"Still rate-limited after {max_retries} retries. Wikisource is asking "
+        f"us to slow down further — try raising REQUEST_DELAY_SEC in config.py "
+        f"(e.g. to 1.0 or 1.5) and re-run; already-downloaded pages are skipped "
+        f"automatically so this just resumes."
+    )
+
+
 def get_all_subpage_titles(book_title: str) -> list:
     """Return the book's main page title plus every chapter/subpage title."""
     titles = []
@@ -48,9 +72,7 @@ def get_all_subpage_titles(book_title: str) -> list:
         if apcontinue:
             params["apcontinue"] = apcontinue
 
-        resp = requests.get(WIKI_API, params=params, headers=HEADERS, timeout=30)
-        resp.raise_for_status()
-        data = resp.json()
+        data = _api_get(params)
 
         for page in data.get("query", {}).get("allpages", []):
             title = page["title"]
@@ -83,9 +105,7 @@ def get_links_from_page(title: str) -> list:
         if plcontinue:
             params["plcontinue"] = plcontinue
 
-        resp = requests.get(WIKI_API, params=params, headers=HEADERS, timeout=30)
-        resp.raise_for_status()
-        data = resp.json()
+        data = _api_get(params)
 
         pages = data.get("query", {}).get("pages", {})
         for p in pages.values():
@@ -137,9 +157,7 @@ def fetch_rendered_html(title: str) -> dict:
         "format": "json",
         "redirects": 1,
     }
-    resp = requests.get(WIKI_API, params=params, headers=HEADERS, timeout=30)
-    resp.raise_for_status()
-    data = resp.json()
+    data = _api_get(params)
     if "error" in data:
         raise RuntimeError(f"API error for '{title}': {data['error']}")
 
