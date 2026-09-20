@@ -1,0 +1,21 @@
+# Generated data (recreate with `python pipeline.py`)
+data/raw/*.json
+data/processed/*.jsonl
+vectorstore/faiss_index/
+
+# Keep folder structure
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!vectorstore/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
