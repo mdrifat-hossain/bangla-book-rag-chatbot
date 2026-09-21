@@ -55,10 +55,7 @@ def format_docs(docs) -> str:
 class RagChatbot:
     def __init__(self, k: int = TOP_K, llm_model: str = LLM_MODEL):
         self.vectorstore = load_index()
-        self.retriever = self.vectorstore.as_retriever(
-            search_type="mmr",
-            search_kwargs={"k": k, "fetch_k": max(k * 5, 20), "lambda_mult": 0.5},
-        )
+        self.retriever = self.vectorstore.as_retriever(search_kwargs={"k": k})
         self.llm = ChatOllama(
             model=llm_model,
             base_url=OLLAMA_BASE_URL,

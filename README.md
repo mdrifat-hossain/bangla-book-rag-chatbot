@@ -13,7 +13,7 @@ and free** using [Ollama](https://ollama.com).
 
 | | |
 |---|---|
-| **Title** | কপালকুণ্ডলা (Kapalkundala) |
+| **Title** | কপালকুণ্ডলা (বঙ্কিমচন্দ্র চট্টোপাধ্যায়, ১৮৭০) |
 | **Author** | বঙ্কিমচন্দ্র চট্টোপাধ্যায় (Bankim Chandra Chattopadhyay) |
 | **Bengali Wikisource link** | https://bn.wikisource.org/wiki/কপালকুণ্ডলা |
 | **Description** | Published in 1866, considered the first major romantic novel in Bengali literature. It tells the story of Kapalkundala, a girl raised in a remote forest by a Kapalik (tantric ascetic), who saves and later marries Nabakumar, a young gentleman from Saptagram — and the tragedy that follows when her past catches up with her. |
@@ -175,9 +175,15 @@ book rather than only the front page.
   `load_local`, and is more than fast enough for a single-book corpus
   of a few hundred chunks.
 - The vector store is queried through a LangChain **retriever**
-  (`vectorstore.as_retriever(search_kwargs={"k": TOP_K})`, `TOP_K=4` by
-  default in `config.py`) which returns the most relevant chunks (and
-  their metadata) for a given question's embedding.
+  (`vectorstore.as_retriever(search_kwargs={"k": TOP_K})`, `TOP_K=6` by
+  default in `config.py`) using **plain cosine-similarity search**
+  (not MMR/diversity re-ranking) — for a single-book corpus, the
+  highest-similarity chunks are consistently the most relevant ones,
+  and diversity re-ranking was tested and found to occasionally
+  discard the single most relevant chunk in favor of a less relevant
+  but more "different" one, which hurt answer quality on narrative
+  questions. `debug_retrieval.py` lets you compare both modes for any
+  question if you want to re-evaluate this trade-off on your own book.
 
 ### E. RAG Pipeline & LLM
 - **LLM used:** `qwen3:8b`, served locally via Ollama
@@ -228,7 +234,19 @@ Question 9 is the required "answer not present in the book" test case.
 
 ---
 
-## 7. Bonus — Chunking Strategy Comparison (+10 marks)
+## 7. Demo Video Checklist
+When recording your 3–5 minute demo:
+1. **Pipeline (≈30–60s):** show `python pipeline.py` running (or its
+   completed output/logs) — crawling, chunking, embedding, index build.
+2. **Questions (≥5):** ask at least 5 of the questions from
+   `tests/test_questions.md` in the Streamlit app, showing each answer
+   *and* its source citation panel.
+3. **No-answer case:** ask question #9 (or a similar out-of-book
+   question) and show the chatbot correctly refusing to hallucinate.
+
+---
+
+## 8. Bonus — Chunking Strategy Comparison (+10 marks)
 ```bash
 python -m bonus.compare_chunking
 ```
